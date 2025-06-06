@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">Media Explorer</string>
+    <string name="home_title">Media Explorer</string>
+    <string name="home_subtitle">Please select a category</string>
+    <string name="home_bottom_view">View</string>
+    <string name="home_bottom_delete">Delete</string>
+    <string name="second_title">Elements</string>
+    <string name="second_subtitle">Please select a element</string>
+    <string name="second_bottom_view">View</string>
+    <string name="second_bottom_delete">Delete</string>
+    <string name="newcategory_title">New Category</string>
+    <string name="newcategory_subtitle">Enter the data for the new category</string>
+    <string name="newcategory_bottom">Add category</string>
+    <string name="newelement_title">New Element</string>
+    <string name="newelement_subtitle">Enter the data for the new element</string>
+    <string name="newelement_bottom">Add element</string>
+    <string name="element_bottom">Go to Home</string>
+    <string name="form_title">Title</string>
+    <string name="form_description">Description</string>
+    <string name="form_classification">Classification</string>
+    <string name="supportingText_title">Enter the title</string>
+    <string name="supportingText_description">Enter the description</string>
+    <string name="alertdialog_title_category">Delete Category</string>
+    <string name="alertdialog_title_element">Delete Element</string>
+    <string name="alertdialog_message">Are you sure you want to delete?</string>
+    <string name="alertdialog_confirmbutton">Yes</string>
+    <string name="alertdialog_dismissbutton">No</string>
+</resources>

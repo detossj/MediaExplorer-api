@@ -1,0 +1,204 @@
+package com.deto.mediaexplorer.ui.screens
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuAnchorType
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.deto.mediaexplorer.R
+import com.deto.mediaexplorer.SecondScreenPage
+import com.deto.mediaexplorer.ui.AppViewModelProvider
+import com.deto.mediaexplorer.ui.components.CustomOutlinedTextField
+import com.deto.mediaexplorer.ui.components.CustomTopAppBar
+import com.example.compose.onPrimaryContainerLight
+import com.example.compose.secondaryContainerDark
+import kotlinx.coroutines.launch
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: NewElementViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+
+    val scope = rememberCoroutineScope()
+    var error by remember { mutableStateOf(false) }
+    var error2 by remember { mutableStateOf(false) }
+    var expanded by remember { mutableStateOf(false) }
+    val classification = listOf<Int>(1,2,3,4,5)
+    var selectedClassification by remember { mutableStateOf(classification[0]) }
+
+
+    Scaffold(
+
+        modifier = Modifier.fillMaxSize(),
+        containerColor = secondaryContainerDark,
+        contentColor = onPrimaryContainerLight,
+        topBar = {
+            CustomTopAppBar(
+                stringResource(R.string.newelement_title),
+                stringResource(R.string.newelement_subtitle)
+            )
+        },
+        bottomBar = {
+            BottomAppBar() {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    TextButton(
+                        modifier = Modifier.fillMaxWidth(.7f),
+                        onClick = {
+                            error = viewModel.newElementUiState.newElement.title.isBlank()
+                            error2 = viewModel.newElementUiState.newElement.description.isBlank()
+
+                            if( !error && !error2){
+
+                                scope.launch {
+                                    viewModel.updateUiState(
+                                        viewModel.newElementUiState.newElement.copy(categoryId = categoryId)
+                                    )
+                                    viewModel.saveItem()
+                                    navController.navigate(SecondScreenPage(categoryId))
+                                }
+                            }
+
+                        },
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Text(stringResource(R.string.newelement_bottom))
+                        Icon(
+                            imageVector = Icons.Default.KeyboardArrowRight,
+                            contentDescription = "advance",
+                            modifier = Modifier.padding(0.dp)
+                        )
+                    }
+
+                }
+            }
+        }
+
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier.padding(innerPadding),
+
+        ){
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight()
+                    .padding(horizontal = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CustomOutlinedTextField(
+                    value = viewModel.newElementUiState.newElement.title,
+                    onValueChange = {
+                        viewModel.updateUiState(viewModel.newElementUiState.newElement.copy(title = it))
+                        error = it.isBlank()
+                    },
+
+                    icon = R.drawable.title_24px,
+                    label = R.string.form_title,
+                    placeholder = R.string.form_title,
+                    supportingText = R.string.supportingText_title,
+                    isError = error
+                )
+                CustomOutlinedTextField(
+                    value = viewModel.newElementUiState.newElement.description,
+                    onValueChange = {
+                        viewModel.updateUiState(viewModel.newElementUiState.newElement.copy(description = it))
+                        error2 = it.isBlank()
+                    },
+
+                    icon = R.drawable.description_24px,
+                    label = R.string.form_description,
+                    placeholder = R.string.form_description,
+                    supportingText = R.string.supportingText_description,
+                    isError = error2
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = selectedClassification.toString(),
+                        leadingIcon = {
+                            Icon(
+                                painterResource(R.drawable.star_24px),
+                                contentDescription = "title",
+                                tint = Color.White
+                            )
+                        },
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text(stringResource(R.string.form_classification)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded)},
+                        modifier = Modifier
+                            .menuAnchor(type = MenuAnchorType.PrimaryEditable, enabled = true)
+                            .fillMaxWidth()
+                            .padding(vertical = 20.dp),
+
+
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        classification.forEach { item ->
+                            DropdownMenuItem(
+                                text = { Text(item.toString()) },
+                                onClick = {
+                                    selectedClassification = item
+                                    viewModel.updateUiState(
+                                        viewModel.newElementUiState.newElement.copy(classification = item)
+                                    )
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
+
+
+                }
+
+
+
+            }
+        }
+
+    }
+
+}
