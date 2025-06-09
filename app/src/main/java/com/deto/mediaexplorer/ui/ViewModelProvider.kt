@@ -5,11 +5,11 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.deto.mediaexplorer.MediaExplorerApplication
-import com.deto.mediaexplorer.ui.screens.ElementViewModel
-import com.deto.mediaexplorer.ui.screens.HomeViewModel
-import com.deto.mediaexplorer.ui.screens.NewCategoryViewModel
-import com.deto.mediaexplorer.ui.screens.NewElementViewModel
-import com.deto.mediaexplorer.ui.screens.SecondViewModel
+import com.deto.mediaexplorer.ui.elements.ElementViewModel
+import com.deto.mediaexplorer.ui.categories.HomeViewModel
+import com.deto.mediaexplorer.ui.categories.NewCategoryViewModel
+import com.deto.mediaexplorer.ui.elements.NewElementViewModel
+import com.deto.mediaexplorer.ui.elements.SecondViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {

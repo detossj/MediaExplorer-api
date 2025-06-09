@@ -1,4 +1,4 @@
-package com.deto.mediaexplorer.ui.screens
+package com.deto.mediaexplorer.ui.categories
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

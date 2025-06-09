@@ -1,4 +1,4 @@
-package com.deto.mediaexplorer.ui.screens
+package com.deto.mediaexplorer.ui.elements
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +15,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,8 +39,8 @@ import androidx.navigation.NavController
 import com.deto.mediaexplorer.HomePage
 import com.deto.mediaexplorer.R
 import androidx.compose.runtime.getValue
-import com.deto.mediaexplorer.data.Element
 import com.deto.mediaexplorer.ui.AppViewModelProvider
+import com.deto.mediaexplorer.ui.elements.ElementViewModel
 import com.example.compose.onPrimaryContainerLight
 import com.example.compose.onSecondaryLight
 import com.example.compose.primaryContainerDark

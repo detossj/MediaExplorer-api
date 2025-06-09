@@ -1,4 +1,4 @@
-package com.deto.mediaexplorer.ui.screens
+package com.deto.mediaexplorer.ui.elements
 
 import androidx.lifecycle.ViewModel
 import com.deto.mediaexplorer.data.Element

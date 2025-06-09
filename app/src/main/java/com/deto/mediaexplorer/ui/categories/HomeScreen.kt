@@ -1,6 +1,5 @@
-package com.deto.mediaexplorer.ui.screens
+package com.deto.mediaexplorer.ui.categories
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
@@ -34,20 +32,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.deto.mediaexplorer.ElementScreenPage
-import com.deto.mediaexplorer.NewElementScreenPage
 import com.deto.mediaexplorer.R
-import com.deto.mediaexplorer.data.Category
 import com.deto.mediaexplorer.ui.AppViewModelProvider
 import com.example.compose.onPrimaryContainerLight
 import com.example.compose.onTertiaryDark
@@ -56,35 +50,28 @@ import com.example.compose.primaryContainerDark
 import com.example.compose.secondaryContainerDark
 import com.example.compose.surfaceContainerDark
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import com.deto.mediaexplorer.NewCategoryScreenPage
+import com.deto.mediaexplorer.SecondScreenPage
 import com.deto.mediaexplorer.ui.components.CustomAlertDialog
 import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SecondScreen(navController: NavController, categoryId: Int, viewModel: SecondViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
-
-    val elements by viewModel.getElementsForCategory(categoryId).collectAsState(initial = emptyList())
-    var selectedElementId by remember { mutableIntStateOf(0) }
+    val listCategory by viewModel.categoriesList.collectAsState(initial = emptyList())
+    var selected by remember { mutableIntStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = {
-            CustomTopAppBar(
-                stringResource(R.string.second_title),
-                stringResource(R.string.second_subtitle)
-            )
-        },
         containerColor = secondaryContainerDark,
         contentColor = onPrimaryContainerLight,
+        topBar = { CustomTopAppBar(stringResource(R.string.home_title),stringResource(R.string.home_subtitle))},
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navController.navigate(NewElementScreenPage(categoryId))},
+                onClick = {  navController.navigate(NewCategoryScreenPage)},
                 containerColor = surfaceContainerDark,
                 contentColor = onTertiaryLight
 
@@ -103,20 +90,22 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
                     TextButton(
                         modifier = Modifier.weight(1f),
                         onClick = {
-                            if(selectedElementId == 0){
+                            if(selected == 0){
                                 showDialog = false
                             }
                             else{
                                 showDialog = true
                             }
+
                         }
                     ) {
-                        Text(stringResource(R.string.second_bottom_delete))
+                        Text(stringResource(R.string.home_bottom_delete))
                     }
 
                     TextButton(
                         modifier = Modifier.weight(1f),
-                        onClick = { if( selectedElementId == 0 ) {} else navController.navigate(ElementScreenPage(selectedElementId)) },
+                        onClick = { if( selected == 0 ) {} else navController.navigate(
+                            SecondScreenPage(selected)) },
                         shape = CircleShape,
                         contentPadding = PaddingValues(0.dp),
                         colors = ButtonColors(
@@ -126,7 +115,7 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
                             disabledContainerColor = Color.Transparent
                         )
                     ) {
-                        Text(stringResource(R.string.second_bottom_view))
+                        Text(stringResource(R.string.home_bottom_view))
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowRight,
                             contentDescription = "advance",
@@ -136,7 +125,6 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
                 }
             }
         }
-
 
     ) { innerPadding ->
 
@@ -150,118 +138,69 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
         ) {
 
             LazyVerticalGrid(
-                columns = GridCells.Fixed(1),
+                columns = GridCells.Fixed(2),
                 contentPadding = PaddingValues(20.dp),
                 modifier = Modifier.fillMaxWidth()
 
             ) {
-                items( elements ) {
+                items(listCategory) { item ->
+                    val category = item.category
                     Card(
                         modifier = Modifier
                             .padding(10.dp)
-                            .clickable { selectedElementId = it.id },
+                            .clickable { selected = category.id },
                         colors = CardColors(
                             contentColor = Color.White,
-                            containerColor =  if (selectedElementId == it.id ) onTertiaryDark else primaryContainerDark,
+                            containerColor = if (selected == category.id) onTertiaryDark else primaryContainerDark,
                             disabledContentColor = Color.White,
                             disabledContainerColor = Color.Transparent
                         )
                     ) {
-
-                        Row(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .fillMaxHeight()
+                                .padding(horizontal = 20.dp, vertical = 35.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            // Columna izquierda: imagen
-                            Column(
-                                modifier = Modifier
-                                    .weight(1f),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if(it.imagen == null){
-                                    Image(
-                                            painter = painterResource(R.drawable.no_photography_24px),
-                                        contentDescription = "Image Element",
-                                        modifier = Modifier.size(200.dp)
-                                    )
-
-                                } else {
-                                    Image(
-                                        painter = painterResource(it.imagen!!),
-                                        contentDescription = "Image Element",
-                                        modifier = Modifier.size(200.dp)
-                                    )
-                                }
-
+                            if (category.icon == null) {
+                                Icon(
+                                    painterResource(R.drawable.noimage),
+                                    contentDescription = "Category Box",
+                                    modifier = Modifier.size(60.dp)
+                                )
+                            } else {
+                                Icon(
+                                    painterResource(category.icon!!),
+                                    contentDescription = "Category Box",
+                                    modifier = Modifier.size(60.dp)
+                                )
                             }
 
-                            // Columna derecha: título y descripción
-                            Column(
-                                modifier = Modifier
-                                    .weight(2f)
-                                    .padding(start = 16.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.Start
-                            ) {
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.End,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-                                    Text(
-                                        text = it.classification.toString(),
-                                        fontSize = 18.sp
-                                    )
-                                    Icon(
-                                        painter = painterResource(R.drawable.star_24px),
-                                        contentDescription = "classification",
-                                        modifier = Modifier
-                                            .padding(start = 4.dp)
-                                            .size(18.dp)
-                                    )
-                                }
-                                Text(
-                                    text = it.title,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Text(
-                                    text = if( it.description.length > 100) it.description.take(100) + "..." else it.description,
-                                    fontSize = 14.sp
-                                )
-
-
-                            }
+                            Text(text = category.title)
                         }
-
                     }
                 }
 
-
             }
+
             CustomAlertDialog(
                 showDialog,
+                { showDialog = false},
                 {
+                    viewModel.deleteCategoryById(selected)
                     showDialog = false
+                    selected = 0
                 },
-                {
-                    viewModel.deleteElementById(selectedElementId)
-                    showDialog = false
-                    selectedElementId = 0
-                },
-                stringResource(R.string.alertdialog_title_element),
+                stringResource(R.string.alertdialog_title_category),
                 stringResource(R.string.alertdialog_message)
             )
 
         }
 
     }
-
 }
+
+
 
