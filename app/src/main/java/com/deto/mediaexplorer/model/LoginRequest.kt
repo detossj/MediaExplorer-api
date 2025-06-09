@@ -1,4 +1,3 @@
 package com.deto.mediaexplorer.model
 
-class LoginRequest {
-}
+data class LoginRequest(val email: String, val password: String)
