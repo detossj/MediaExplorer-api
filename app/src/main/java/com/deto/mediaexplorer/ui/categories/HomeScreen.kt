@@ -50,6 +50,7 @@ import com.example.compose.primaryContainerDark
 import com.example.compose.secondaryContainerDark
 import com.example.compose.surfaceContainerDark
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import com.deto.mediaexplorer.NewCategoryScreenPage
 import com.deto.mediaexplorer.SecondScreenPage
@@ -61,7 +62,11 @@ import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 @Composable
 fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
-    val listCategory by viewModel.categoriesList.collectAsState(initial = emptyList())
+    LaunchedEffect(Unit) {
+        viewModel.refreshCategories()
+    }
+
+    val uiState = viewModel.categoriesUiState
     var selected by remember { mutableIntStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
     Scaffold(
@@ -137,55 +142,67 @@ fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewMod
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(20.dp),
-                modifier = Modifier.fillMaxWidth()
+            when (uiState) {
+                is CategoriesUiState.Loading -> {
+                    Text(text = "Loading categories...")
+                }
 
-            ) {
-                items(listCategory) { item ->
-                    val category = item.category
-                    Card(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clickable { selected = category.id },
-                        colors = CardColors(
-                            contentColor = Color.White,
-                            containerColor = if (selected == category.id) onTertiaryDark else primaryContainerDark,
-                            disabledContentColor = Color.White,
-                            disabledContainerColor = Color.Transparent
-                        )
+                is CategoriesUiState.Error -> {
+                    Text(text = "Error: ${uiState.message}")
+                }
+
+                is CategoriesUiState.Success -> {
+                    val categories = uiState.categories
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(20.dp),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight()
-                                .padding(horizontal = 20.dp, vertical = 35.dp),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            if (category.icon == null) {
-                                Icon(
-                                    painterResource(R.drawable.noimage),
-                                    contentDescription = "Category Box",
-                                    modifier = Modifier.size(60.dp)
+                        items(categories) { category ->
+                            Card(
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .clickable { selected = category.id },
+                                colors = CardColors(
+                                    contentColor = Color.White,
+                                    containerColor = if (selected == category.id) onTertiaryDark else primaryContainerDark,
+                                    disabledContentColor = Color.White,
+                                    disabledContainerColor = Color.Transparent
                                 )
-                            } else {
-                                Icon(
-                                    painterResource(category.icon!!),
-                                    contentDescription = "Category Box",
-                                    modifier = Modifier.size(60.dp)
-                                )
-                            }
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .fillMaxHeight()
+                                        .padding(horizontal = 20.dp, vertical = 35.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    if (category.icon == null) {
+                                        Icon(
+                                            painterResource(R.drawable.noimage),
+                                            contentDescription = "Category Box",
+                                            modifier = Modifier.size(60.dp)
+                                        )
+                                    } else {
+                                        Icon(
+                                            painterResource(category.icon),
+                                            contentDescription = "Category Box",
+                                            modifier = Modifier.size(60.dp)
+                                        )
+                                    }
 
-                            Text(text = category.title)
+                                    Text(text = category.title)
+                                }
+                            }
                         }
                     }
                 }
 
-            }
+                else -> {}
 
-            CustomAlertDialog(
+                /*  CustomAlertDialog(
                 showDialog,
                 { showDialog = false},
                 {
@@ -195,12 +212,14 @@ fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewMod
                 },
                 stringResource(R.string.alertdialog_title_category),
                 stringResource(R.string.alertdialog_message)
-            )
+            )*/
 
+            }
         }
-
     }
-}
+    }
+
+
 
 
 
