@@ -28,7 +28,7 @@ object AppViewModelProvider {
             NewElementViewModel(App().container.elementRepository)
         }
         initializer {
-            ElementViewModel(App().container.elementRepository)
+            ElementViewModel(App().container.elementApiService)
         }
         initializer {
             AuthViewModel(App().container.authApiService, App().baseContext)
