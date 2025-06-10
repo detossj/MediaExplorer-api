@@ -22,7 +22,7 @@ object AppViewModelProvider {
             NewCategoryViewModel(App().container.categoryRepository)
         }
         initializer {
-            SecondViewModel(App().container.elementRepository)
+            SecondViewModel(App().container.elementApiService)
         }
         initializer {
             NewElementViewModel(App().container.elementRepository)
