@@ -4,56 +4,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.Category
 import com.deto.mediaexplorer.data.CategoryRepository
+import com.deto.mediaexplorer.data.remote.services.CategoryService
+import kotlinx.coroutines.launch
 
-class NewCategoryViewModel (private val categoryRepository: CategoryRepository) : ViewModel() {
+sealed class CategoryUiState {
+    data class Success(val categories: List<Category>) : CategoryUiState()
+    data class Error(val message: String) : CategoryUiState()
+    object Loading : CategoryUiState()
+    object Idle : CategoryUiState()
+}
+class NewCategoryViewModel (private val categoryService: CategoryService) : ViewModel() {
 
-    var newCategoryUiState by mutableStateOf(NewCategoryUIState())
+    var categoryUiState: CategoryUiState by mutableStateOf(CategoryUiState.Loading)
         private set
 
-    fun updateUiState(newCategory: NewCategory) {
-        newCategoryUiState =
-            NewCategoryUIState(newCategory = newCategory, isEntryValid = validateInput(newCategory) )
-    }
-
-    suspend fun saveItem() {
-        if(validateInput()){
-            categoryRepository.insertCategory(newCategoryUiState.newCategory.toCategory())
+    fun addCategory(name: String) {
+        viewModelScope.launch {
+            categoryUiState = CategoryUiState.Loading
+            try {
+                categoryService.addCategory(Category(0,name,null))
+                val updatedList = categoryService.getCategories()
+                categoryUiState = CategoryUiState.Success(updatedList)
+            } catch (e: Exception) {
+                categoryUiState = CategoryUiState.Error(e.message ?: "error")
+            }
         }
     }
-
-    private fun validateInput(uiState: NewCategory = newCategoryUiState.newCategory) : Boolean {
-        return with(uiState) {
-            title.isNotBlank()
-        }
+    fun resetUiState() {
+        categoryUiState = CategoryUiState.Idle
     }
+
 }
-
-data class NewCategoryUIState(
-    val newCategory: NewCategory = NewCategory(),
-    val isEntryValid: Boolean = false
-)
-
-data class NewCategory(
-    val id: Int = 0,
-    val title: String = "",
-    val icon: Int? = null
-)
-
-fun NewCategory.toCategory(): Category = Category(
-    id = id,
-    title = title,
-    icon = icon
-)
-
-fun Category.toItemUiState(isEntryValid: Boolean = false): NewCategoryUIState = NewCategoryUIState(
-    newCategory = this.toItemDetails(),
-    isEntryValid = isEntryValid
-)
-
-fun Category.toItemDetails(): NewCategory = NewCategory(
-    id = id,
-    title = title,
-    icon = icon
-)
