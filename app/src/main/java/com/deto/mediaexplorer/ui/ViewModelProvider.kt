@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.deto.mediaexplorer.MediaExplorerApplication
+import com.deto.mediaexplorer.data.remote.services.CategoryService
 import com.deto.mediaexplorer.ui.auth.AuthViewModel
 import com.deto.mediaexplorer.ui.elements.ElementViewModel
 import com.deto.mediaexplorer.ui.categories.HomeViewModel
@@ -15,7 +16,7 @@ import com.deto.mediaexplorer.ui.elements.SecondViewModel
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer{
-            HomeViewModel(App().container.categoryRepository)
+            HomeViewModel(App().container.categoryApiService)
         }
         initializer {
             NewCategoryViewModel(App().container.categoryRepository)
