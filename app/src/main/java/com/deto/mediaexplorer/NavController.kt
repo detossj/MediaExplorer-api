@@ -5,6 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.deto.mediaexplorer.ui.auth.AuthManager
+import com.deto.mediaexplorer.ui.auth.LoginScreen
 import com.deto.mediaexplorer.ui.elements.ElementScreen
 import com.deto.mediaexplorer.ui.categories.HomeScreen
 import com.deto.mediaexplorer.ui.categories.NewCategoryScreen
@@ -27,6 +29,13 @@ data class NewElementScreenPage(val categoryId: Int)
 @Serializable
 data class ElementScreenPage(val id: Int)
 
+@Serializable
+object AuthManager
+
+@Serializable
+object Login
+
+
 
 @Composable
 fun Navigation(){
@@ -35,7 +44,14 @@ fun Navigation(){
 
     val navController = rememberNavController()
 
-    NavHost( navController = navController, startDestination = HomePage ){
+    NavHost( navController = navController, startDestination = AuthManager ){
+
+        composable<AuthManager> {
+            AuthManager(navController = navController)
+        }
+        composable<Login>{
+            LoginScreen(navController = navController)
+        }
 
         composable<HomePage> {
             HomeScreen(navController = navController)
