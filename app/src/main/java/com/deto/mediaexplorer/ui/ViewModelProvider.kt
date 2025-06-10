@@ -19,7 +19,7 @@ object AppViewModelProvider {
             HomeViewModel(App().container.categoryApiService)
         }
         initializer {
-            NewCategoryViewModel(App().container.categoryRepository)
+            NewCategoryViewModel(App().container.categoryApiService)
         }
         initializer {
             SecondViewModel(App().container.elementApiService)
