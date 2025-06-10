@@ -23,13 +23,13 @@ abstract class AppDatabase : RoomDatabase(){
         fun getDatabase(context: Context): AppDatabase{
             return Instance ?: synchronized(this) {
                 Room.databaseBuilder(context, AppDatabase::class.java, "App_database")
-                    .addCallback(DatabaseCallback(context)) // <- Aquí se insertan los datos iniciales
+                   /* .addCallback(DatabaseCallback(context)) // <- Aquí se insertan los datos iniciales*/
                     .build()
                     .also { Instance = it }
             }
         }
     }
-    private class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
+    /*private class DatabaseCallback(private val context: Context) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
             // Insertar datos solo cuando se crea la BD por primera vez
@@ -69,5 +69,5 @@ abstract class AppDatabase : RoomDatabase(){
             }
         }
     }
-
+*/
 }
