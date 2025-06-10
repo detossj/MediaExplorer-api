@@ -54,7 +54,9 @@ import com.example.compose.primaryContainerDark
 import com.example.compose.secondaryContainerDark
 import com.example.compose.surfaceContainerDark
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
+import com.deto.mediaexplorer.ui.categories.CategoriesUiState
 import com.deto.mediaexplorer.ui.components.CustomAlertDialog
 import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 
@@ -63,8 +65,11 @@ import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 @Composable
 fun SecondScreen(navController: NavController, categoryId: Int, viewModel: SecondViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
+    LaunchedEffect(Unit) {
+        viewModel.refreshElements()
+    }
 
-    val elements by viewModel.getElementsForCategory(categoryId).collectAsState(initial = emptyList())
+    val uiState = viewModel.elementsUiState
     var selectedElementId by remember { mutableIntStateOf(0) }
     var showDialog by remember { mutableStateOf(false) }
 
@@ -145,119 +150,141 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(1),
-                contentPadding = PaddingValues(20.dp),
-                modifier = Modifier.fillMaxWidth()
+            when (uiState) {
+                is ElementsUiState.Loading -> {
+                    Text(text = "Loading categories...")
+                }
 
-            ) {
-                items( elements ) {
-                    Card(
-                        modifier = Modifier
-                            .padding(10.dp)
-                            .clickable { selectedElementId = it.id },
-                        colors = CardColors(
-                            contentColor = Color.White,
-                            containerColor =  if (selectedElementId == it.id ) onTertiaryDark else primaryContainerDark,
-                            disabledContentColor = Color.White,
-                            disabledContainerColor = Color.Transparent
-                        )
+                is ElementsUiState.Error -> {
+                    Text(text = "Error: ${uiState.message}")
+                }
+
+                is ElementsUiState.Success -> {
+                    val elements = uiState.elements
+
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
+                        contentPadding = PaddingValues(20.dp),
+                        modifier = Modifier.fillMaxWidth()
+
                     ) {
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            // Columna izquierda: imagen
-                            Column(
+                        items(elements) { element ->
+                            Card(
                                 modifier = Modifier
-                                    .weight(1f),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                if(it.imagen == null){
-                                    Image(
-                                            painter = painterResource(R.drawable.no_photography_24px),
-                                        contentDescription = "Image Element",
-                                        modifier = Modifier.size(200.dp)
-                                    )
-
-                                } else {
-                                    Image(
-                                        painter = painterResource(it.imagen!!),
-                                        contentDescription = "Image Element",
-                                        modifier = Modifier.size(200.dp)
-                                    )
-                                }
-
-                            }
-
-                            // Columna derecha: título y descripción
-                            Column(
-                                modifier = Modifier
-                                    .weight(2f)
-                                    .padding(start = 16.dp),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.Start
+                                    .padding(10.dp)
+                                    .clickable { selectedElementId = element.id },
+                                colors = CardColors(
+                                    contentColor = Color.White,
+                                    containerColor = if (selectedElementId == element.id) onTertiaryDark else primaryContainerDark,
+                                    disabledContentColor = Color.White,
+                                    disabledContainerColor = Color.Transparent
+                                )
                             ) {
 
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.End,
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .padding(20.dp),
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(
-                                        text = it.classification.toString(),
-                                        fontSize = 18.sp
-                                    )
-                                    Icon(
-                                        painter = painterResource(R.drawable.star_24px),
-                                        contentDescription = "classification",
+                                    // Columna izquierda: imagen
+                                    Column(
                                         modifier = Modifier
-                                            .padding(start = 4.dp)
-                                            .size(18.dp)
-                                    )
+                                            .weight(1f),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        if (element.imagen == null) {
+                                            Image(
+                                                painter = painterResource(R.drawable.no_photography_24px),
+                                                contentDescription = "Image Element",
+                                                modifier = Modifier.size(200.dp)
+                                            )
+
+                                        } else {
+                                            Image(
+                                                painter = painterResource(element.imagen!!),
+                                                contentDescription = "Image Element",
+                                                modifier = Modifier.size(200.dp)
+                                            )
+                                        }
+
+                                    }
+
+                                    // Columna derecha: título y descripción
+                                    Column(
+                                        modifier = Modifier
+                                            .weight(2f)
+                                            .padding(start = 16.dp),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.Start
+                                    ) {
+
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.End,
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                        ) {
+                                            Text(
+                                                text = element.classification.toString(),
+                                                fontSize = 18.sp
+                                            )
+                                            Icon(
+                                                painter = painterResource(R.drawable.star_24px),
+                                                contentDescription = "classification",
+                                                modifier = Modifier
+                                                    .padding(start = 4.dp)
+                                                    .size(18.dp)
+                                            )
+                                        }
+                                        Text(
+                                            text = element.title,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+
+                                        Text(
+                                            text = if (element.description.length > 100) element.description.take(
+                                                100
+                                            ) + "..." else element.description,
+                                            fontSize = 14.sp
+                                        )
+
+
+                                    }
+
                                 }
-                                Text(
-                                    text = it.title,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-
-                                Text(
-                                    text = if( it.description.length > 100) it.description.take(100) + "..." else it.description,
-                                    fontSize = 14.sp
-                                )
-
 
                             }
                         }
 
+
                     }
+
+                    /* CustomAlertDialog(
+                    showDialog,
+                    {
+                        showDialog = false
+                    },
+                    {
+                        viewModel.deleteElementById(selectedElementId)
+                        showDialog = false
+                        selectedElementId = 0
+                    },
+                    stringResource(R.string.alertdialog_title_element),
+                    stringResource(R.string.alertdialog_message)
+                )
+                */
+
                 }
 
-
+                else -> {}
             }
-            CustomAlertDialog(
-                showDialog,
-                {
-                    showDialog = false
-                },
-                {
-                    viewModel.deleteElementById(selectedElementId)
-                    showDialog = false
-                    selectedElementId = 0
-                },
-                stringResource(R.string.alertdialog_title_element),
-                stringResource(R.string.alertdialog_message)
-            )
 
         }
 
-    }
 
-}
+    }
+    }
 
