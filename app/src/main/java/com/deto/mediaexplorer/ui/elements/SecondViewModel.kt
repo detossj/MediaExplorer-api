@@ -46,28 +46,28 @@ class SecondViewModel(
         elementsUiState = ElementsUiState.Idle
     }
 
-    private fun getElements(){
+    private fun getElementsByCategory(categoryId: Int){
         viewModelScope.launch {
             elementsUiState = ElementsUiState.Loading
             elementsUiState = try {
-                val listElements = elementService.getElements()
-                ElementsUiState.Success(listElements)
+                val filteredElements = elementService.getElementsByCategory(categoryId)
+                ElementsUiState.Success(filteredElements)
             } catch (e: Exception) {
-                ElementsUiState.Error(e.message ?: "Error desconocido")
+                ElementsUiState.Error(e.message ?: "error")
             }
         }
     }
 
-    fun refreshElements() {
-        getElements()
+    fun refreshElements(categoryId: Int) {
+        getElementsByCategory(categoryId)
     }
 
-    fun addElement(name: String, description: String, classification: Int) {
+    fun addElement(name: String, description: String, classification: Int, categoryId: Int) {
         viewModelScope.launch {
             elementsUiState = ElementsUiState.Loading
             try {
-                elementService.addElement(Element(0,name,description,classification,null,0))
-                val updatedList = elementService.getElements()
+                elementService.addElement(Element(0, name, description, classification, null, categoryId))
+                val updatedList = elementService.getElementsByCategory(categoryId)
                 elementsUiState = ElementsUiState.Success(updatedList)
             } catch (e: Exception) {
                 elementsUiState = ElementsUiState.Error(e.message ?: "error")
