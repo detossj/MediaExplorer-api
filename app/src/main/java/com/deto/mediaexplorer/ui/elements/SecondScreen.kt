@@ -66,7 +66,7 @@ import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 fun SecondScreen(navController: NavController, categoryId: Int, viewModel: SecondViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
     LaunchedEffect(Unit) {
-        viewModel.refreshElements()
+        viewModel.refreshElements(categoryId)
     }
 
     val uiState = viewModel.elementsUiState
@@ -152,7 +152,7 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
 
             when (uiState) {
                 is ElementsUiState.Loading -> {
-                    Text(text = "Loading categories...")
+                    Text(text = "Loading elements...")
                 }
 
                 is ElementsUiState.Error -> {
