@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.Category
-import com.deto.mediaexplorer.data.CategoryRepository
 import com.deto.mediaexplorer.data.remote.services.CategoryService
 import kotlinx.coroutines.launch
 
@@ -16,22 +15,6 @@ sealed class CategoriesUiState {
     object Loading : CategoriesUiState()
     object Idle : CategoriesUiState()
 }
-
-
-/*
-class HomeViewModel (private val categoryRepository: CategoryRepository) : ViewModel() {
-
-    val categoriesList = categoryRepository.getAllCategoriesStream()
-
-    fun deleteCategoryById(id: Int) {
-        viewModelScope.launch {
-            categoryRepository.deleteCategoryById(id)
-        }
-    }
-
-
-
-}*/
 
 class HomeViewModel(
     private val categoryService: CategoryService

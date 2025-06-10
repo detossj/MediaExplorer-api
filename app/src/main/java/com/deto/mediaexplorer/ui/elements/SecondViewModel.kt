@@ -6,9 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.Element
-import com.deto.mediaexplorer.data.ElementRepository
 import com.deto.mediaexplorer.data.remote.services.ElementService
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 sealed class ElementsUiState {
@@ -18,23 +16,6 @@ sealed class ElementsUiState {
     object Idle : ElementsUiState()
 }
 
-
-/*
-class SecondViewModel (private val elementRepository: ElementRepository) : ViewModel() {
-
-    fun getElementsForCategory(categoryId: Int): Flow<List<Element>> {
-        return elementRepository.getAllElementsStream(categoryId)
-    }
-
-    fun deleteElementById(id: Int) {
-        viewModelScope.launch {
-            elementRepository.deleteElementById(id)
-        }
-    }
-
-
-
-}*/
 
 class SecondViewModel(
     private val elementService: ElementService
