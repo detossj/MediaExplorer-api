@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.deto.mediaexplorer.MediaExplorerApplication
+import com.deto.mediaexplorer.ui.auth.AuthViewModel
 import com.deto.mediaexplorer.ui.elements.ElementViewModel
 import com.deto.mediaexplorer.ui.categories.HomeViewModel
 import com.deto.mediaexplorer.ui.categories.NewCategoryViewModel
@@ -27,6 +28,9 @@ object AppViewModelProvider {
         }
         initializer {
             ElementViewModel(App().container.elementRepository)
+        }
+        initializer {
+            AuthViewModel(App().container.authApiService, App().baseContext)
         }
     }
 
