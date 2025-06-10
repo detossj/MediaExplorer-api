@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,9 +43,24 @@ import kotlinx.coroutines.launch
 @Composable
 fun NewCategoryScreen( navController: NavController, viewModel: NewCategoryViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
-    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        viewModel.resetUiState()
+    }
+
     var error by remember { mutableStateOf(false) }
 
+    var title by remember { mutableStateOf("") }
+
+    val categoryState = viewModel.categoryUiState
+    var shouldRedirect by remember { mutableStateOf(true) }
+
+    // Redirección si se agregó la categoria con éxito
+    LaunchedEffect(categoryState) {
+        if (shouldRedirect && categoryState is CategoryUiState.Success) {
+            shouldRedirect = false
+            navController.popBackStack()
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -66,12 +82,9 @@ fun NewCategoryScreen( navController: NavController, viewModel: NewCategoryViewM
                         modifier = Modifier.fillMaxWidth(.7f),
                         onClick = {
 
-                            error = viewModel.newCategoryUiState.newCategory.title.isBlank()
+                            error = title.isBlank()
                             if( !error ){
-                                scope.launch {
-                                    viewModel.saveItem()
-                                    navController.navigate(HomePage)
-                                }
+                                viewModel.addCategory(title)
                             }
                         },
                         shape = CircleShape,
@@ -105,9 +118,9 @@ fun NewCategoryScreen( navController: NavController, viewModel: NewCategoryViewM
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomOutlinedTextField(
-                    value = viewModel.newCategoryUiState.newCategory.title,
+                    value = title,
                     onValueChange = {
-                        viewModel.updateUiState(viewModel.newCategoryUiState.newCategory.copy(title = it))
+                        title = it
                         error = it.isBlank()
                     },
                     icon = R.drawable.title_24px,
