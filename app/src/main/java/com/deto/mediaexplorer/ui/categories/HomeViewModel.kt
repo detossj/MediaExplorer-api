@@ -22,10 +22,6 @@ class HomeViewModel(
     var categoriesUiState: CategoriesUiState by mutableStateOf(CategoriesUiState.Loading)
         private set
 
-    fun resetUiState() {
-        categoriesUiState = CategoriesUiState.Idle
-    }
-
     private fun getCategories(){
         viewModelScope.launch {
             categoriesUiState = CategoriesUiState.Loading
@@ -42,16 +38,4 @@ class HomeViewModel(
         getCategories()
     }
 
-    fun addCategory(name: String) {
-        viewModelScope.launch {
-            categoriesUiState = CategoriesUiState.Loading
-            try {
-                categoryService.addCategory(Category(0,name,null))
-                val updatedList = categoryService.getCategories()
-                categoriesUiState = CategoriesUiState.Success(updatedList)
-            } catch (e: Exception) {
-                categoriesUiState = CategoriesUiState.Error(e.message ?: "error")
-            }
-        }
-    }
 }
