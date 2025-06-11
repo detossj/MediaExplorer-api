@@ -262,20 +262,20 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
 
                     }
 
-                    /* CustomAlertDialog(
+                    CustomAlertDialog(
                     showDialog,
                     {
                         showDialog = false
                     },
                     {
-                        viewModel.deleteElementById(selectedElementId)
+                        viewModel.deleteElementById(selectedElementId,categoryId)
                         showDialog = false
                         selectedElementId = 0
                     },
                     stringResource(R.string.alertdialog_title_element),
                     stringResource(R.string.alertdialog_message)
                 )
-                */
+
 
                 }
 
