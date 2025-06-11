@@ -51,12 +51,12 @@ fun NewCategoryScreen( navController: NavController, viewModel: NewCategoryViewM
 
     var title by remember { mutableStateOf("") }
 
-    val categoryState = viewModel.categoryUiState
+    val categoryState = viewModel.newCategoryUiState
     var shouldRedirect by remember { mutableStateOf(true) }
 
     // Redirección si se agregó la categoria con éxito
     LaunchedEffect(categoryState) {
-        if (shouldRedirect && categoryState is CategoryUiState.Success) {
+        if (shouldRedirect && categoryState is NewCategoryUiState.Success) {
             shouldRedirect = false
             navController.popBackStack()
         }
