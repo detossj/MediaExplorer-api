@@ -202,7 +202,9 @@ fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewMod
 
                 else -> {}
 
-                /*  CustomAlertDialog(
+            }
+
+            CustomAlertDialog(
                 showDialog,
                 { showDialog = false},
                 {
@@ -212,9 +214,7 @@ fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewMod
                 },
                 stringResource(R.string.alertdialog_title_category),
                 stringResource(R.string.alertdialog_message)
-            )*/
-
-            }
+            )
         }
     }
     }

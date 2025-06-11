@@ -38,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.mediaexplorer.R
 import com.deto.mediaexplorer.ui.AppViewModelProvider
-import com.deto.mediaexplorer.ui.categories.CategoryUiState
 import com.deto.mediaexplorer.ui.components.CustomOutlinedTextField
 import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 import com.example.compose.onPrimaryContainerLight

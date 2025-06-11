@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.Element
 import com.deto.mediaexplorer.data.remote.services.ElementService
+import com.deto.mediaexplorer.ui.categories.CategoriesUiState
 import kotlinx.coroutines.launch
 
 sealed class ElementsUiState {
@@ -22,10 +23,6 @@ class SecondViewModel(
 ) : ViewModel(){
     var elementsUiState: ElementsUiState by mutableStateOf(ElementsUiState.Loading)
         private set
-
-    fun resetUiState() {
-        elementsUiState = ElementsUiState.Idle
-    }
 
     private fun getElementsByCategory(categoryId: Int){
         viewModelScope.launch {
@@ -43,11 +40,11 @@ class SecondViewModel(
         getElementsByCategory(categoryId)
     }
 
-    fun addElement(name: String, description: String, classification: Int, categoryId: Int) {
+    fun deleteElementById(id: Int, categoryId: Int) {
         viewModelScope.launch {
             elementsUiState = ElementsUiState.Loading
             try {
-                elementService.addElement(Element(0, name, description, classification, null, categoryId))
+                elementService.deleteElementById(id)
                 val updatedList = elementService.getElementsByCategory(categoryId)
                 elementsUiState = ElementsUiState.Success(updatedList)
             } catch (e: Exception) {

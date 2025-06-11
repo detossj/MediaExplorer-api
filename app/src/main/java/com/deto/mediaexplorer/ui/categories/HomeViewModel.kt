@@ -34,6 +34,19 @@ class HomeViewModel(
         }
     }
 
+    fun deleteCategoryById(id: Int) {
+        viewModelScope.launch {
+            categoriesUiState = CategoriesUiState.Loading
+            try {
+                categoryService.deleteCategoryById(id)
+                val updatedList = categoryService.getCategories()
+                categoriesUiState = CategoriesUiState.Success(updatedList)
+            } catch (e: Exception) {
+                categoriesUiState = CategoriesUiState.Error(e.message ?: "error")
+            }
+        }
+    }
+
     fun refreshCategories() {
         getCategories()
     }
