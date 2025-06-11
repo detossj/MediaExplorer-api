@@ -23,10 +23,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,25 +37,40 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.mediaexplorer.R
-import com.deto.mediaexplorer.SecondScreenPage
 import com.deto.mediaexplorer.ui.AppViewModelProvider
+import com.deto.mediaexplorer.ui.categories.CategoryUiState
 import com.deto.mediaexplorer.ui.components.CustomOutlinedTextField
 import com.deto.mediaexplorer.ui.components.CustomTopAppBar
 import com.example.compose.onPrimaryContainerLight
 import com.example.compose.secondaryContainerDark
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: NewElementViewModel = viewModel(factory = AppViewModelProvider.Factory)){
 
-    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        viewModel.resetUiState()
+    }
+
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
     var error by remember { mutableStateOf(false) }
     var error2 by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     val classification = listOf<Int>(1,2,3,4,5)
     var selectedClassification by remember { mutableStateOf(classification[0]) }
 
+    val elementState = viewModel.newElementUiState
+    var shouldRedirect by remember { mutableStateOf(true) }
+
+    // Redirección si se agregó un elemento con éxito
+    LaunchedEffect(elementState) {
+        if (shouldRedirect && elementState is NewElementUiState.Success) {
+            shouldRedirect = false
+            navController.popBackStack()
+        }
+    }
 
     Scaffold(
 
@@ -77,18 +92,12 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                     TextButton(
                         modifier = Modifier.fillMaxWidth(.7f),
                         onClick = {
-                            error = viewModel.newElementUiState.newElement.title.isBlank()
-                            error2 = viewModel.newElementUiState.newElement.description.isBlank()
+                            error = title.isBlank()
+                            error2 = description.isBlank()
 
                             if( !error && !error2){
 
-                                scope.launch {
-                                    viewModel.updateUiState(
-                                        viewModel.newElementUiState.newElement.copy(categoryId = categoryId)
-                                    )
-                                    viewModel.saveItem()
-                                    navController.navigate(SecondScreenPage(categoryId))
-                                }
+                               viewModel.addElement(title,description,selectedClassification,categoryId)
                             }
 
                         },
@@ -121,9 +130,9 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomOutlinedTextField(
-                    value = viewModel.newElementUiState.newElement.title,
+                    value = title,
                     onValueChange = {
-                        viewModel.updateUiState(viewModel.newElementUiState.newElement.copy(title = it))
+                        title = it
                         error = it.isBlank()
                     },
 
@@ -134,9 +143,9 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                     isError = error
                 )
                 CustomOutlinedTextField(
-                    value = viewModel.newElementUiState.newElement.description,
+                    value = description,
                     onValueChange = {
-                        viewModel.updateUiState(viewModel.newElementUiState.newElement.copy(description = it))
+                        description = it
                         error2 = it.isBlank()
                     },
 
@@ -181,9 +190,6 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                                 text = { Text(item.toString()) },
                                 onClick = {
                                     selectedClassification = item
-                                    viewModel.updateUiState(
-                                        viewModel.newElementUiState.newElement.copy(classification = item)
-                                    )
                                     expanded = false
                                 }
                             )

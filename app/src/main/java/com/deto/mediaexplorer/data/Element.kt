@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity(
     tableName = "elements",
@@ -24,5 +25,5 @@ data class Element(
     val description: String,
     val classification: Int,
     val imagen: Int?,
-    val categoryId: Int  // Este campo es la clave foránea que apunta a `Category`
+    @SerializedName("category_id") val categoryId: Int
 )

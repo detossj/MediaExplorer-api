@@ -25,7 +25,7 @@ object AppViewModelProvider {
             SecondViewModel(App().container.elementApiService)
         }
         initializer {
-            NewElementViewModel(App().container.elementRepository)
+            NewElementViewModel(App().container.elementApiService)
         }
         initializer {
             ElementViewModel(App().container.elementApiService)

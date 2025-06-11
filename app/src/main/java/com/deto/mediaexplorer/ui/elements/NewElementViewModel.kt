@@ -4,66 +4,39 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.Element
-import com.deto.mediaexplorer.data.ElementRepository
+import com.deto.mediaexplorer.data.remote.services.ElementService
+import kotlinx.coroutines.launch
 import kotlin.Int
 
-class NewElementViewModel(private val elementRepository: ElementRepository) : ViewModel() {
+sealed class NewElementUiState {
+    data class Success(val elements: List<Element>) : NewElementUiState()
+    data class Error(val message: String) : NewElementUiState()
+    object Loading : NewElementUiState()
+    object Idle : NewElementUiState()
+}
 
-    var newElementUiState by mutableStateOf(NewElementUIState())
+class NewElementViewModel(private val elementService: ElementService) : ViewModel() {
+
+    var newElementUiState: NewElementUiState by mutableStateOf(NewElementUiState.Loading)
         private set
 
-    fun updateUiState(newElement: NewElement){
-        newElementUiState =
-            NewElementUIState(newElement = newElement, isEntryValid = validateInput(newElement))
-    }
 
-    suspend fun saveItem() {
-        if(validateInput()){
-            elementRepository.insertElement(newElementUiState.newElement.toElement())
+    fun addElement(title: String, description: String, classification: Int, categoryId: Int){
+
+        viewModelScope.launch {
+            newElementUiState = NewElementUiState.Loading
+            try {
+                elementService.addElement(Element(0,title,description,classification,null, categoryId))
+                val updatedList = elementService.getElements()
+                newElementUiState = NewElementUiState.Success(updatedList)
+            } catch (e: Exception) {
+                newElementUiState = NewElementUiState.Error(e.message ?: "error")
+            }
         }
     }
-
-    private fun validateInput(uiState: NewElement = newElementUiState.newElement) : Boolean {
-        return with(uiState) {
-            title.isNotBlank() && description.isNotBlank()
-        }
+    fun resetUiState() {
+        newElementUiState = NewElementUiState.Idle
     }
-    
 }
-data class NewElementUIState(
-    val newElement: NewElement = NewElement(),
-    val isEntryValid: Boolean = false
-)
-
-data class NewElement(
-    val id: Int = 0,
-    val title: String = "",
-    val description: String = "",
-    val classification: Int = 1,
-    val imagen: Int? = null,
-    val categoryId: Int = 0
-)
-
-fun NewElement.toElement(): Element = Element(
-    id = id,
-    title = title,
-    description = description,
-    classification = classification,
-    imagen = imagen,
-    categoryId = categoryId
-)
-
-fun Element.toItemUiState(isEntryValid: Boolean = false): NewElementUIState = NewElementUIState(
-    newElement = this.toItemDetails(),
-    isEntryValid = isEntryValid
-)
-
-fun Element.toItemDetails(): NewElement = NewElement(
-    id = id,
-    title = title,
-    description = description,
-    classification = classification,
-    imagen = imagen,
-    categoryId = categoryId
-)

@@ -16,6 +16,9 @@ interface ElementService {
     @GET("api/elements/{id}")
     suspend fun getElementById(@Path("id") id: Int): Element
 
+    @GET("api/elements")
+    suspend fun getElements(): List<Element>
+
     @POST("api/elements")
     suspend fun addElement(@Body category: Element): Element
 }

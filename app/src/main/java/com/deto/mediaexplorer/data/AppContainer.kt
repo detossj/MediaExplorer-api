@@ -7,22 +7,12 @@ import com.deto.mediaexplorer.data.remote.services.CategoryService
 import com.deto.mediaexplorer.data.remote.services.ElementService
 
 interface AppContainer {
-    val categoryRepository : CategoryRepository
-    val elementRepository : ElementRepository
     val authApiService: AuthService
     val categoryApiService: CategoryService
     val elementApiService: ElementService
 }
 
 class AppDataContainer(private val context: Context) : AppContainer {
-
-    override val categoryRepository: CategoryRepository by lazy {
-        LocalCategoryRepository(AppDatabase.getDatabase(context).categoryDao())
-    }
-
-    override val elementRepository: ElementRepository by lazy {
-        LocalElementRepository(AppDatabase.getDatabase(context).elementDao())
-    }
 
     override val authApiService: AuthService by lazy {
         ApiClient.create(context).create(AuthService::class.java)
