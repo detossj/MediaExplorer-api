@@ -10,11 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun CustomOutlinedTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, icon: Int, label: Int, placeholder: Int, supportingText: Int, isError: Boolean, iconTint: Color = Color.White) {
+fun CustomOutlinedTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, icon: Int, label: Int, placeholder: Int, supportingText: Int, isError: Boolean, iconTint: Color = Color.White, textStyle: TextStyle = TextStyle(color = Color.White) ) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
@@ -35,6 +36,7 @@ fun CustomOutlinedTextField(value: String, onValueChange: (String) -> Unit, modi
             if (isError) Text(stringResource(id = supportingText))
         },
         minLines = 1,
-        maxLines = 1
+        maxLines = 1,
+        textStyle = textStyle
     )
 }
