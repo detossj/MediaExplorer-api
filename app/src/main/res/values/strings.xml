@@ -25,4 +25,16 @@
     <string name="alertdialog_message">Are you sure you want to delete?</string>
     <string name="alertdialog_confirmbutton">Yes</string>
     <string name="alertdialog_dismissbutton">No</string>
+    <string name="login_email_supportingText">Enter the email</string>
+    <string name="login_email_placeholder">Email</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_password_supportingText">Enter the password</string>
+    <string name="login_password_placeholder">Password</string>
+    <string name="login_password_label">Password</string>
+    <string name="name_app">Media Explorer</string>
+    <string name="auth_successful">Authentication successful!</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Sign Up</string>
 </resources>
