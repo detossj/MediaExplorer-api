@@ -14,19 +14,18 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun CustomOutlinedTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, icon: Int, label: Int, placeholder: Int, supportingText: Int, isError: Boolean
-) {
+fun CustomOutlinedTextField(value: String, onValueChange: (String) -> Unit, modifier: Modifier = Modifier, icon: Int, label: Int, placeholder: Int, supportingText: Int, isError: Boolean, iconTint: Color = Color.White) {
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 20.dp),
+            .padding(vertical = 10.dp),
         leadingIcon = {
             Icon(
                 painter = painterResource(id = icon),
                 contentDescription = "icon",
-                tint = Color.White
+                tint = iconTint
             )
         },
         label = { Text(stringResource(id = label)) },
