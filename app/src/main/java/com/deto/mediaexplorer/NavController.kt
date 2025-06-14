@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.deto.mediaexplorer.ui.auth.AuthManager
 import com.deto.mediaexplorer.ui.auth.LoginScreen
+import com.deto.mediaexplorer.ui.auth.RegisterScreen
 import com.deto.mediaexplorer.ui.elements.ElementScreen
 import com.deto.mediaexplorer.ui.categories.HomeScreen
 import com.deto.mediaexplorer.ui.categories.NewCategoryScreen
@@ -35,6 +36,9 @@ object AuthManager
 @Serializable
 object Login
 
+@Serializable
+object Register
+
 
 
 @Composable
@@ -52,7 +56,9 @@ fun Navigation(){
         composable<Login>{
             LoginScreen(navController = navController)
         }
-
+        composable<Register>{
+            RegisterScreen(navController = navController)
+        }
         composable<HomePage> {
             HomeScreen(navController = navController)
         }
