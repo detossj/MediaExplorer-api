@@ -1,7 +1,6 @@
 package com.deto.mediaexplorer.ui.auth
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.deto.mediaexplorer.data.remote.TokenManager
 import com.deto.mediaexplorer.data.remote.services.AuthService
 import com.deto.mediaexplorer.model.LoginRequest
+import com.deto.mediaexplorer.model.RegisterRequest
 import kotlinx.coroutines.launch
 
 sealed class AuthUiState {
@@ -43,6 +43,27 @@ class AuthViewModel(
                 val response = authService.login(LoginRequest(email, password))
                 TokenManager.saveToken(context, response.token)
                 authState = AuthUiState.Success(response.token)
+
+            } catch (e: Exception) {
+
+                authState = AuthUiState.Error(e.message ?: "Login failed")
+
+            }
+        }
+    }
+
+    fun register(name: String, email: String, password: String) {
+
+        viewModelScope.launch {
+
+            authState = AuthUiState.Loading
+
+            try {
+
+                val response = authService.register(RegisterRequest( name, email, password, password ))
+                TokenManager.saveToken(context, response.token)
+                authState = AuthUiState.Success(response.token)
+
 
             } catch (e: Exception) {
 
