@@ -25,7 +25,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,9 +38,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.deto.mediaexplorer.HomePage
 import com.deto.mediaexplorer.R
-import androidx.compose.runtime.getValue
 import com.deto.mediaexplorer.ui.AppViewModelProvider
-import com.deto.mediaexplorer.ui.elements.ElementViewModel
+import com.deto.mediaexplorer.ui.components.RemoteImage
+
 import com.example.compose.onPrimaryContainerLight
 import com.example.compose.onSecondaryLight
 import com.example.compose.primaryContainerDark
@@ -193,7 +192,7 @@ fun ElementScreen(navController: NavController, id: Int, viewModel: ElementViewM
                             verticalArrangement = Arrangement.Top,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if (element?.imagen == null) {
+                            if (element?.image == null) {
                                 Image(
                                     painter = painterResource(R.drawable.no_photography_24px),
                                     contentDescription = "Image Element",
@@ -204,13 +203,7 @@ fun ElementScreen(navController: NavController, id: Int, viewModel: ElementViewM
                                 )
 
                             } else {
-                                Image(
-                                    painter = painterResource(element?.imagen!!),
-                                    contentDescription = "Image Element",
-                                    modifier = Modifier
-                                        .size(300.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                )
+                                RemoteImage(element.image)
                             }
 
                             Text(
@@ -229,5 +222,7 @@ fun ElementScreen(navController: NavController, id: Int, viewModel: ElementViewM
             }
             else -> {}
         }
+
+
     }
 }
