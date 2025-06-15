@@ -7,6 +7,7 @@ import com.deto.mediaexplorer.model.RegisterResponse
 import com.deto.mediaexplorer.model.User
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthService {
@@ -19,6 +20,6 @@ interface AuthService {
     @GET("api/profile")
     suspend fun getUser(): User
 
-    @POST("logout")
-    suspend fun logout()
+    @POST("api/logout")
+    suspend fun logout( @Header("Authorization") token: String)
 }
