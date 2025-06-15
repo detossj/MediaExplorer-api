@@ -53,9 +53,11 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
+    var icon by remember { mutableStateOf("") }
 
     var error by remember { mutableStateOf(false) }
     var error2 by remember { mutableStateOf(false) }
+    var error3 by remember { mutableStateOf(false) }
     var expanded by remember { mutableStateOf(false) }
     val classification = listOf<Int>(1,2,3,4,5)
     var selectedClassification by remember { mutableStateOf(classification[0]) }
@@ -94,10 +96,11 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                         onClick = {
                             error = title.isBlank()
                             error2 = description.isBlank()
+                            error3 = icon.isBlank()
 
-                            if( !error && !error2){
+                            if( !error && !error2 && !error3){
 
-                               viewModel.addElement(title,description,selectedClassification,categoryId)
+                               viewModel.addElement(title,description,icon,selectedClassification,categoryId)
                             }
 
                         },
@@ -154,6 +157,20 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
                     placeholder = R.string.form_description,
                     supportingText = R.string.supportingText_description,
                     isError = error2
+                )
+
+                CustomOutlinedTextField(
+                    value = icon,
+                    onValueChange = {
+                        icon = it
+                        error3 = it.isBlank()
+                    },
+
+                    icon = R.drawable.link_24px,
+                    label = R.string.form_icon,
+                    placeholder = R.string.form_icon,
+                    supportingText = R.string.supportingText_icon,
+                    isError = error3
                 )
 
                 ExposedDropdownMenuBox(
