@@ -23,12 +23,12 @@ class NewElementViewModel(private val elementService: ElementService) : ViewMode
         private set
 
 
-    fun addElement(title: String, description: String, classification: Int, categoryId: Int){
+    fun addElement(title: String, description: String, icon: String, classification: Int, categoryId: Int){
 
         viewModelScope.launch {
             newElementUiState = NewElementUiState.Loading
             try {
-                elementService.addElement(Element(0,title,description,classification,null, categoryId))
+                elementService.addElement(Element(0,title,description,classification,icon, categoryId))
                 val updatedList = elementService.getElements()
                 newElementUiState = NewElementUiState.Success(updatedList)
             } catch (e: Exception) {
