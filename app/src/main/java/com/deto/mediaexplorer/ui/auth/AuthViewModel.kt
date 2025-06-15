@@ -92,13 +92,25 @@ class AuthViewModel(
     }
 
     private fun isLoggedIn() {
-    viewModelScope.launch {
+        viewModelScope.launch {
+            authState = AuthUiState.Loading
             try {
-                val response = authService.getUser()
-                authState = AuthUiState.loggedIn(true)
+                val token = TokenManager.getToken(context)
+                if (token != null) {
+                    // Opción rápida: Confiar en el token local ( funciona para login persistente )
+                    authState = AuthUiState.loggedIn(true)
+
+                    // Opción segura: Validar token con el backend
+                    // val response = authService.getUser() // Llamada a /profile
+                    // authState = AuthUiState.loggedIn(true)
+                } else {
+                    authState = AuthUiState.loggedIn(false)
+                }
             } catch (e: Exception) {
                 authState = AuthUiState.loggedIn(false)
             }
         }
     }
+
+
 }
