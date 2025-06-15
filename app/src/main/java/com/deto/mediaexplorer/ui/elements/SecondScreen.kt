@@ -56,9 +56,9 @@ import com.example.compose.surfaceContainerDark
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import com.deto.mediaexplorer.ui.categories.CategoriesUiState
 import com.deto.mediaexplorer.ui.components.CustomAlertDialog
 import com.deto.mediaexplorer.ui.components.CustomTopAppBar
+import com.deto.mediaexplorer.ui.components.RemoteImage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -195,7 +195,7 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
                                         verticalArrangement = Arrangement.Center,
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
-                                        if (element.imagen == null) {
+                                        if (element.image == null) {
                                             Image(
                                                 painter = painterResource(R.drawable.no_photography_24px),
                                                 contentDescription = "Image Element",
@@ -203,11 +203,7 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
                                             )
 
                                         } else {
-                                            Image(
-                                                painter = painterResource(element.imagen!!),
-                                                contentDescription = "Image Element",
-                                                modifier = Modifier.size(200.dp)
-                                            )
+                                            RemoteImage(element.image)
                                         }
 
                                     }
