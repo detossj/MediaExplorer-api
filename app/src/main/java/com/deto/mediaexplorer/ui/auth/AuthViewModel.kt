@@ -74,13 +74,20 @@ class AuthViewModel(
     }
 
     fun logout() {
-        viewModelScope.launch {
 
+
+        viewModelScope.launch {
             try {
-                authService.logout()
+                val token = TokenManager.getToken(context)
+                if (token != null) {
+                    authService.logout("Bearer $token")
+                }
                 TokenManager.clearToken(context)
                 authState = AuthUiState.Idle
-            } catch (_: Exception) {}
+            } catch (e: Exception) {
+                authState = AuthUiState.Error("")
+            }
+
         }
     }
 
