@@ -17,9 +17,11 @@
     <string name="element_bottom">Go to Home</string>
     <string name="form_title">Title</string>
     <string name="form_description">Description</string>
+    <string name="form_icon">Icon</string>
     <string name="form_classification">Classification</string>
     <string name="supportingText_title">Enter the title</string>
     <string name="supportingText_description">Enter the description</string>
+    <string name="supportingText_icon">Enter the icon</string>
     <string name="alertdialog_title_category">Delete Category</string>
     <string name="alertdialog_title_element">Delete Element</string>
     <string name="alertdialog_message">Are you sure you want to delete?</string>
