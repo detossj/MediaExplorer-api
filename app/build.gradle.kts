@@ -84,4 +84,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
 
+    //Images
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
 }
