@@ -24,6 +24,6 @@ data class Element(
     val title: String,
     val description: String,
     val classification: Int,
-    val imagen: Int?,
+    val image: String?,
     @SerializedName("category_id") val categoryId: Int
 )
