@@ -78,6 +78,7 @@ fun NewElementScreen(navController: NavController, categoryId: Int, viewModel: N
         contentColor = onPrimaryContainerLight,
         topBar = {
             CustomTopAppBar(
+                navController,
                 stringResource(R.string.newelement_title),
                 stringResource(R.string.newelement_subtitle)
             )

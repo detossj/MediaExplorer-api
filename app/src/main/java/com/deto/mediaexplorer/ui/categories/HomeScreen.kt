@@ -73,7 +73,7 @@ fun HomeScreen( navController: NavController, viewModel: HomeViewModel = viewMod
         modifier = Modifier.fillMaxSize(),
         containerColor = secondaryContainerDark,
         contentColor = onPrimaryContainerLight,
-        topBar = { CustomTopAppBar(stringResource(R.string.home_title),stringResource(R.string.home_subtitle))},
+        topBar = { CustomTopAppBar(navController,stringResource(R.string.home_title),stringResource(R.string.home_subtitle))},
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {  navController.navigate(NewCategoryScreenPage)},

@@ -67,7 +67,7 @@ fun NewCategoryScreen( navController: NavController, viewModel: NewCategoryViewM
         containerColor = secondaryContainerDark,
         contentColor = onPrimaryContainerLight,
         topBar = {
-            CustomTopAppBar(
+            CustomTopAppBar(navController,
                 stringResource(R.string.newcategory_title),
                 stringResource(R.string.newcategory_subtitle)
             )

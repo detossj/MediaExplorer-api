@@ -77,6 +77,7 @@ fun SecondScreen(navController: NavController, categoryId: Int, viewModel: Secon
         modifier = Modifier.fillMaxSize(),
         topBar = {
             CustomTopAppBar(
+                navController,
                 stringResource(R.string.second_title),
                 stringResource(R.string.second_subtitle)
             )
